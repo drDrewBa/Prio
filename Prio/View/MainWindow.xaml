@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
         xmlns:local="clr-namespace:Prio.View"
+        xmlns:model="clr-namespace:Prio.Model"
         mc:Ignorable="d"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -156,6 +157,7 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition Height="30"/>
                         <RowDefinition Height="70" />
                     </Grid.RowDefinitions>
 
@@ -206,7 +208,7 @@
                                     FontSize="18"
                                     VerticalAlignment="Center"
                                     BorderThickness="0"
-                                    Margin="5" />
+                                    Margin="5"/>
                     </Border>
 
                     <!--Estimated Time-->
@@ -217,6 +219,25 @@
                                Grid.Row="2"
                                Grid.Column="1"
                                Margin="10 0 0 0" />
+
+                    <Border Grid.Row="3"
+                            Grid.Column="1"
+                            Margin="10 5 30 5"
+                            CornerRadius="5"
+                            BorderThickness="1"
+                            Background="#EAEAEA"
+                            BorderBrush="#2A2A2A">
+                        <ComboBox BorderThickness="0"
+                                  Margin="2"
+                                  FontFamily="Montserrat"
+                                  Foreground="#2A2A2A"
+                                  FontSize="18"
+                                  VerticalAlignment="Center"
+                                  ItemsSource="{x:Static model:EstimatedTime.EstimatedTimeArray}"
+                                  SelectedIndex="0">
+                            
+                        </ComboBox>
+                    </Border>
 
                     <!--Importance-->
                     <TextBlock Text="Importance"
@@ -350,23 +371,57 @@
 
                     </Grid>
 
-                    <!--Penind-->
+                    <!--Pending-->
                     <TextBlock Text="Pending"
                                FontFamily="Montserrat"
                                FontSize="18"
                                VerticalAlignment="Center"
-                               Grid.Row="8"
                                Grid.Column="0"
-                               Margin="30 0 0 0" />
+                               Margin="30 0 0 0"
+                               Grid.Row="8"/>
+
+
+                    <StackPanel Grid.Row="9"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Margin="30 0 0 0">
+                        <RadioButton Content="Yes"
+                                     FontFamily="Montserrat"
+                                     FontWeight="Light"
+                                     FontSize="15"
+                                     Margin="0 0 20 0"></RadioButton>
+                        <RadioButton Content="No"
+                                     FontFamily="Montserrat"
+                                     FontWeight="Light"
+                                     FontSize="15"
+                                     IsChecked="True"></RadioButton>
+                    </StackPanel>
 
                     <!--Resources-->
-                    <TextBlock Text="Resources&#10;Available"
+                    <TextBlock Text="Resources Available"
                                FontFamily="Montserrat"
                                FontSize="18"
                                VerticalAlignment="Center"
                                Grid.Row="8"
                                Grid.Column="1"
                                Margin="10 0 0 0" />
+
+                    <StackPanel Grid.Row="9"
+                                Grid.Column="1"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Margin="10 0 0 0">
+                        <RadioButton Content="Yes"
+                                     FontFamily="Montserrat"
+                                     FontWeight="Light"
+                                     FontSize="15"
+                                     Margin="0 0 20 0"
+                                     IsChecked="True"></RadioButton>
+                        <RadioButton Content="No"
+                                     FontFamily="Montserrat"
+                                     FontWeight="Light"
+                                     FontSize="15"></RadioButton>
+                    </StackPanel>
 
                     <!--Add item button-->
                     <Button x:Name="btnAdd"
@@ -378,7 +433,7 @@
                             FontWeight="Bold"
                             FontFamily="Montserrat"
                             Cursor="Hand"
-                            Grid.Row="9"
+                            Grid.Row="10"
                             Grid.ColumnSpan="2"
                             Click="btnAdd_Click">
 
@@ -663,7 +718,7 @@
                                     <ControlTemplate TargetType="Button">
                                         <Border Height="40"
                                                 CornerRadius="20"
-                                                Margin="30 0 10 0"
+                                                Margin="30 0 5 0"
                                                 Background="{TemplateBinding Background}">
                                             <ContentPresenter VerticalAlignment="Center"
                                                               HorizontalAlignment="Center" />
@@ -702,7 +757,7 @@
                                     <ControlTemplate TargetType="Button">
                                         <Border Height="40"
                                                 CornerRadius="20"
-                                                Margin="10 0 30 0"
+                                                Margin="5 0 30 0"
                                                 Background="{TemplateBinding Background}">
                                             <ContentPresenter VerticalAlignment="Center"
                                                               HorizontalAlignment="Center" />

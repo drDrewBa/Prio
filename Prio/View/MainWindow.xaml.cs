@@ -22,6 +22,9 @@ namespace Prio.View
         public MainWindow()
         {
             InitializeComponent();
+
+            DataContext = this;
+
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
