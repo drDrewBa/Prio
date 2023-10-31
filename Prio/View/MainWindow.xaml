@@ -6,6 +6,8 @@
         xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
         xmlns:local="clr-namespace:Prio.View"
         xmlns:model="clr-namespace:Prio.Model"
+        xmlns:vm="clr-namespace:Prio.ViewModel"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -157,7 +159,7 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
-                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30" />
                         <RowDefinition Height="70" />
                     </Grid.RowDefinitions>
 
@@ -180,7 +182,7 @@
                              Grid.Row="1"
                              Grid.ColumnSpan="2"
                              FontSize="24"
-                             Text="Hello"
+                             Text="Hello!"
                              FontWeight="Regular"
                              FontFamily="Montserrat"
                              CaretBrush="#7DBBC3"
@@ -204,11 +206,14 @@
                             CornerRadius="5"
                             BorderThickness="1"
                             BorderBrush="#2A2A2A">
-                        <DatePicker FontFamily="Montserrat"
+                        <DatePicker x:Name="datePicker"
+                                    FontFamily="Montserrat"
                                     FontSize="18"
+                                    DisplayDateStart="{x:Static sys:DateTime.Today}"
                                     VerticalAlignment="Center"
                                     BorderThickness="0"
-                                    Margin="5"/>
+                                    Margin="5"
+                                    SelectedDateChanged="datePicker_SelectedDateChanged"/>
                     </Border>
 
                     <!--Estimated Time-->
@@ -227,7 +232,8 @@
                             BorderThickness="1"
                             Background="#EAEAEA"
                             BorderBrush="#2A2A2A">
-                        <ComboBox BorderThickness="0"
+                        <ComboBox x:Name="comboBoxPriority" 
+                                  BorderThickness="0"
                                   Margin="2"
                                   FontFamily="Montserrat"
                                   Foreground="#2A2A2A"
@@ -235,7 +241,7 @@
                                   VerticalAlignment="Center"
                                   ItemsSource="{x:Static model:EstimatedTime.EstimatedTimeArray}"
                                   SelectedIndex="0">
-                            
+
                         </ComboBox>
                     </Border>
 
@@ -254,23 +260,25 @@
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        
-                        <Slider Grid.Row="0"
+
+                        <Slider x:Name="Importance" Grid.Row="0"
                                 VerticalAlignment="Center"
                                 Margin="30 0 20 0"
-                                TickFrequency="2.5"
+                                TickFrequency="1"
+                                Minimum="1"
+                                Maximum="5"
                                 IsSnapToTickEnabled="True">
 
                         </Slider>
 
                         <emoji:TextBlock Grid.Row="1"
-                                         Text="🟢       🟡       🟠       🔴       🟣"
+                                         Text="🟣       🔴       🟠       🟡       🟢"
                                          TextAlignment="Center"
                                          FontSize="16"
-                                         Margin="20 0 10 0"/>
+                                         Margin="20 0 10 0" />
 
                     </Grid>
-                    
+
 
                     <!--Complexity-->
                     <TextBlock Text="Complexity"
@@ -289,16 +297,18 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
 
-                        <Slider Grid.Row="0"
+                        <Slider x:Name="Complexity" Grid.Row="0"
                                 VerticalAlignment="Center"
                                 Margin="10 0 30 0"
-                                TickFrequency="2.5"
+                                TickFrequency="1"
+                                Minimum="1"
+                                Maximum="5"
                                 IsSnapToTickEnabled="True">
 
                         </Slider>
 
                         <emoji:TextBlock Grid.Row="1"
-                                         Text="🟢       🟡       🟠       🔴       🟣"
+                                         Text="🟣       🔴       🟠       🟡       🟢"
                                          TextAlignment="Center"
                                          FontSize="16"
                                          Margin="10 0 30 0" />
@@ -322,16 +332,18 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
 
-                        <Slider Grid.Row="0"
+                        <Slider x:Name="Risk" Grid.Row="0"
                                 VerticalAlignment="Center"
                                 Margin="30 0 20 0"
-                                TickFrequency="2.5"
+                                TickFrequency="1"
+                                Minimum="1"
+                                Maximum="5"
                                 IsSnapToTickEnabled="True">
 
                         </Slider>
 
                         <emoji:TextBlock Grid.Row="1"
-                                         Text="🟢       🟡       🟠       🔴       🟣"
+                                         Text="🟣       🔴       🟠       🟡       🟢"
                                          TextAlignment="Center"
                                          FontSize="16"
                                          Margin="20 0 10 0" />
@@ -355,16 +367,18 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
 
-                        <Slider Grid.Row="0"
+                        <Slider x:Name="Mood" Grid.Row="0"
                                 VerticalAlignment="Center"
                                 Margin="10 0 30 0"
-                                TickFrequency="2.5"
+                                TickFrequency="1"
+                                Minimum="1"
+                                Maximum="5"
                                 IsSnapToTickEnabled="True">
 
                         </Slider>
 
                         <emoji:TextBlock Grid.Row="1"
-                                         Text="😟       ☹️       😐       🙂       😀"
+                                         Text="😀       🙂       😐       ☹️       😟"
                                          TextAlignment="Center"
                                          FontSize="16"
                                          Margin="10 0 30 0" />
@@ -378,7 +392,7 @@
                                VerticalAlignment="Center"
                                Grid.Column="0"
                                Margin="30 0 0 0"
-                               Grid.Row="8"/>
+                               Grid.Row="8" />
 
 
                     <StackPanel Grid.Row="9"
@@ -389,12 +403,16 @@
                                      FontFamily="Montserrat"
                                      FontWeight="Light"
                                      FontSize="15"
-                                     Margin="0 0 20 0"></RadioButton>
+                                     GroupName="PendingRadio"
+                                     Margin="0 0 20 0"
+                                     Checked="PendingRadio_Checked"></RadioButton>
                         <RadioButton Content="No"
                                      FontFamily="Montserrat"
                                      FontWeight="Light"
                                      FontSize="15"
-                                     IsChecked="True"></RadioButton>
+                                     GroupName="PendingRadio"
+                                     IsChecked="True"
+                                     Checked="PendingRadio_Checked"></RadioButton>
                     </StackPanel>
 
                     <!--Resources-->
@@ -416,11 +434,15 @@
                                      FontWeight="Light"
                                      FontSize="15"
                                      Margin="0 0 20 0"
-                                     IsChecked="True"></RadioButton>
+                                     GroupName="ResourcesRadio"
+                                     IsChecked="True"
+                                     Checked="ResourcesRadio_Checked"></RadioButton>
                         <RadioButton Content="No"
                                      FontFamily="Montserrat"
                                      FontWeight="Light"
-                                     FontSize="15"></RadioButton>
+                                     FontSize="15"
+                                     GroupName="ResourcesRadio"
+                                     Checked="ResourcesRadio_Checked"></RadioButton>
                     </StackPanel>
 
                     <!--Add item button-->
@@ -649,36 +671,40 @@
                         </Grid>
 
                         <!--DataGrid-->
-                        <DataGrid Grid.Row="2"
+                        <DataGrid x:Name="PrioDataGrid"
+                                  Grid.Row="2"
                                   Margin="30 0"
-                                  BorderThickness="0"
-                                  FontFamily="Montserrat"
-                                  FontSize="12"
-                                  Foreground="Black"
                                   Background="#E6E6FA"
-                                  AlternatingRowBackground="Gray">
-                            <DataGrid.ColumnHeaderStyle>
-                                <Style TargetType="{x:Type DataGridColumnHeader}">
-                                    <Setter Property="Background"
-                                            Value="#A992D1" />
-                                    <Setter Property="Foreground"
-                                            Value="Black" />
-                                    <Setter Property="FontFamily"
-                                            Value="Montserrat" />
-                                    <Setter Property="FontWeight"
-                                            Value="DemiBold" />
-                                    <Setter Property="Height"
-                                            Value="30" />
-                                    <Setter Property="FontSize"
-                                            Value="14" />
-                                    <Setter Property="HorizontalContentAlignment"
-                                            Value="Left" />
-                                    <Setter Property="VerticalContentAlignment"
-                                            Value="Center" />
-                                    <Setter Property="Padding"
-                                            Value="2 5 10 5" />
-                                </Style>
-                            </DataGrid.ColumnHeaderStyle>
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  AutoGenerateColumns="False"
+                                  Style="{StaticResource CustomDataGridStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn x:Name="TaskColumn"
+                                                    Binding="{Binding Task}"
+                                                    Header="Your task"
+                                                    Width="4*"
+                                                    CanUserResize="False"
+                                                    CanUserReorder="False" />
+                                <DataGridTextColumn x:Name="DateColumn"
+                                                    Binding="{Binding Date}"
+                                                    Header="Due Date"
+                                                    Width="2*"
+                                                    CanUserResize="False"
+                                                    CanUserReorder="False" />
+                                <DataGridTextColumn x:Name="TimeColumn"
+                                                    Binding="{Binding Time}"
+                                                    Header="Est. Time"
+                                                    Width="2*"
+                                                    CanUserResize="False"
+                                                    CanUserReorder="False" />
+                                <DataGridTextColumn x:Name="PointsColumn"
+                                                    Binding="{Binding Priority}"
+                                                    Header="Priority"
+                                                    Width="2*"
+                                                    CanUserResize="False"
+                                                    CanUserReorder="False" />
+                            </DataGrid.Columns>
                         </DataGrid>
 
                         <!--Complete and Cancel Buttons-->
@@ -765,17 +791,10 @@
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
-
                         </Grid>
-
                     </Grid>
-
                 </Border>
-
             </Grid>
-
         </Grid>
-
     </Border>
-
 </Window>

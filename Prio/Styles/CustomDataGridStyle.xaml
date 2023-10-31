@@ -1,0 +1,65 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="CustomDataGridStyle"
+           TargetType="{x:Type DataGrid}">
+        <Setter Property="Background"
+                Value="White" />
+        <Setter Property="Foreground"
+                Value="Black" />
+        <Setter Property="RowHeaderWidth"
+                Value="0" />
+        <Setter Property="AutoGenerateColumns"
+                Value="True" />
+        <Setter Property="HeadersVisibility"
+                Value="Column" />
+        <Setter Property="CanUserResizeColumns"
+                Value="True" />
+        <Setter Property="CanUserSortColumns"
+                Value="False" />
+        <Setter Property="FontFamily"
+                Value="Montserrat" />
+        <Setter Property="FontSize"
+                Value="12" />
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="Margin"
+                Value="0 0 20 0" />
+        <Setter Property="ColumnHeaderStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Background"
+                            Value="#8d65c5" />
+                    <Setter Property="Foreground"
+                            Value="Black" />
+                    <Setter Property="FontWeight"
+                            Value="Bold" />
+                    <Setter Property="FontSize"
+                            Value="14" />
+                    <Setter Property="BorderBrush"
+                            Value="#042A2B" />
+                    <Setter Property="HorizontalContentAlignment"
+                            Value="Left" />
+                    <Setter Property="VerticalContentAlignment"
+                            Value="Center" />
+                    <Setter Property="Padding"
+                            Value="2 5 20 5" />
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ColumnHeaderHeight"
+                Value="30" />
+        <Setter Property="RowHeight"
+                Value="20" />
+        <Setter Property="RowBackground"
+                Value="Transparent" />
+        <Setter Property="AlternatingRowBackground"
+                Value="#CDCDEA" />
+        <Setter Property="GridLinesVisibility"
+                Value="Horizontal" />
+        <Setter Property="HorizontalGridLinesBrush"
+                Value="Black" />
+    </Style>
+
+
+</ResourceDictionary>

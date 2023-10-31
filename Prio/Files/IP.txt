@@ -1,0 +1,7 @@
+Finalize Prio,2023-10-31,< 1 hour,13.96
+Check notes,2023-11-01,< 1 hour,22.96
+Write an email,2023-11-05,< 1 hour,23.45
+Write another email,2023-11-07,< 1 hour,24.33
+Team training,2023-11-28,1 - 4 hours,24.90
+Data analysis,2023-12-05,1 - 4 hours,25.90
+Make a short story,2023-11-30,5 days - 1 week,42.00
