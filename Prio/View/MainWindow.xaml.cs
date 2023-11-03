@@ -70,7 +70,8 @@ namespace Prio.View
                         }; data.Add(item);
                     }
                     else
-                    { MessageBox.Show("Invalid data format in the file.");
+                    {
+                        MessageBox.Show("Invalid data format in the file.");
                         return;
                     }
                 }
@@ -87,7 +88,7 @@ namespace Prio.View
         // Computing points (basis for ordering elements) --------------------------------------------------------------------------------------------------------------
         public decimal CalculatePoints()
         {
-            decimal result = daysDifference - EstimatedTime() + 
+            decimal result = daysDifference - EstimatedTime() +
                 (decimal)(Importance.Value + Complexity.Value + Risk.Value + Mood.Value) +
                 pending + resourcesAvailable;
 
@@ -113,7 +114,8 @@ namespace Prio.View
                     case "1 month": return 30m;
                     default: return 7m;
                 }
-            } return 7m;
+            }
+            return 7m;
         }
 
         private void datePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
@@ -193,7 +195,9 @@ namespace Prio.View
                         string currentDate = DateTime.Today.ToString("yyyy-MM-dd");
                         string lineToAdd = $"{firstPart},{currentDate}, , ";
 
-                        File.AppendAllLines(@"..\..\Files\Completed.txt", new[] { lineToAdd });
+                        List<string> completedLines = File.ReadAllLines(@"..\..\Files\Completed.txt").ToList();
+                        completedLines.Insert(0, lineToAdd);
+                        File.WriteAllLines(@"..\..\Files\Completed.txt", completedLines);
 
                         var remainingLines = lines.Skip(1).ToArray();
 
@@ -229,10 +233,11 @@ namespace Prio.View
                         string currentDate = DateTime.Today.ToString("yyyy-MM-dd");
                         string lineToAdd = $"{firstPart},{currentDate}, , ";
 
-                        File.AppendAllLines(@"..\..\Files\Canceled.txt", new[] { lineToAdd });
+                        List<string> canceledLines = File.ReadAllLines(@"..\..\Files\Canceled.txt").ToList();
+                        canceledLines.Insert(0, lineToAdd);
+                        File.WriteAllLines(@"..\..\Files\Canceled.txt", canceledLines);
 
                         var remainingLines = lines.Skip(1).ToArray();
-
                         File.WriteAllLines(@"..\..\Files\IP.txt", remainingLines);
 
                         MessageBox.Show("Task canceled.");
