@@ -36,6 +36,7 @@ namespace Prio.View
             InitializeComponent();
 
             // Load data from the file
+            StackDue();
             LoadDataFromFile(@"..\..\Files\IP.txt");
 
             var viewModel = new MainViewModel();
@@ -179,7 +180,7 @@ namespace Prio.View
             }
         }
 
-        private void DequeueComplete()
+        private void StackComplete()
         {
             try
             {
@@ -217,7 +218,7 @@ namespace Prio.View
             }
         }
 
-        private void DequeueCancel()
+        private void StackCancel()
         {
             try
             {
@@ -254,13 +255,59 @@ namespace Prio.View
             }
         }
 
+        private void StackDue()
+        {
+            try
+            {
+                string[] lines = File.ReadAllLines(@"..\..\Files\IP.txt");
+                List<string> dueLines = new List<string>();
+                List<string> remainingLines = new List<string>();
+
+                foreach (var line in lines)
+                {
+                    var parts = line.Split(',');
+
+                    if (parts.Length == 4)
+                    {
+                        string taskDate = parts[1];
+
+                        if (DateTime.TryParse(taskDate, out DateTime dueDate) && dueDate < DateTime.Today)
+                        {
+                            // Add the first two parts of the line with spaces for the other two parts
+                            dueLines.Add($"{parts[0]},{parts[1]}, , ");
+                        }
+                        else
+                        {
+                            // Lines that are not due will be kept in "IP.txt"
+                            remainingLines.Add(line);
+                        }
+                    }
+                }
+
+                if (dueLines.Count > 0)
+                {
+                    // Insert the due lines at the first line of the "Due.txt" file
+                    var existingDueLines = File.ReadAllLines(@"..\..\Files\Due.txt").ToList();
+                    existingDueLines.InsertRange(0, dueLines);
+                    File.WriteAllLines(@"..\..\Files\Due.txt", existingDueLines);
+
+                    // Update "IP.txt" with the remaining lines
+                    File.WriteAllLines(@"..\..\Files\IP.txt", remainingLines);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while stacking due tasks: " + ex.Message);
+            }
+        }
+
         // Ordering by Priority -------------------------------------------------------------------------------------------------------------------------------------------------
         private void ReorderFile(string filePath)
         {
             try
             {
                 var lines = File.ReadAllLines(filePath).ToList(); // Convert to a list
-                var orderedLines = OrderByAndSelectLines(lines);
+                var orderedLines = BinaryHeapSort(lines);
 
                 File.WriteAllLines(filePath, orderedLines);
             }
@@ -270,7 +317,8 @@ namespace Prio.View
             }
         }
 
-        private List<string> OrderByAndSelectLines(List<string> lines)
+        // Implementing Binary heap
+        private List<string> BinaryHeapSort(List<string> lines)
         {
             var lineData = new List<(string Line, decimal Value)>();
 
@@ -287,55 +335,134 @@ namespace Prio.View
                 }
             }
 
-            // Custom OrderBy method
-            lineData = OrderBy(lineData, ld => ld.Value).ToList();
-            var orderedLines = Select(lineData, ld => ld.Line).ToList();
+            // Build a binary heap
+            BuildMaxHeap(lineData);
+
+            int n = lineData.Count;
+            for (int i = n - 1; i > 0; i--)
+            {
+                // Swap the root (maximum value) with the last element
+                Swap(lineData, 0, i);
+
+                // Call MaxHeapify on the reduced heap
+                MaxHeapify(lineData, 0, i);
+            }
+
+            // Convert the sorted binary heap to a list of lines
+            var orderedLines = lineData.Select(ld => ld.Line).ToList();
 
             return orderedLines;
         }
 
-        private IEnumerable<TSource> OrderBy<TSource, TKey>(
-        IEnumerable<TSource> source,
-        Func<TSource, TKey> keySelector)
+        private void BuildMaxHeap(List<(string Line, decimal Value)> arr)
         {
-            var list = source.ToList();
-            int n = list.Count;
+            int n = arr.Count;
 
-            for (int i = 0; i < n - 1; i++)
+            for (int i = n / 2 - 1; i >= 0; i--)
             {
-                int minIndex = i;
-
-                for (int j = i + 1; j < n; j++)
-                {
-                    if (Comparer<TKey>.Default.Compare(keySelector(list[j]), keySelector(list[minIndex])) < 0)
-                    {
-                        minIndex = j;
-                    }
-                }
-
-                if (minIndex != i)
-                {
-                    // Swap elements
-                    TSource temp = list[i];
-                    list[i] = list[minIndex];
-                    list[minIndex] = temp;
-                }
-            }
-
-            return list;
-        }
-
-        private IEnumerable<TResult> Select<TSource, TResult>(
-            IEnumerable<TSource> source,
-            Func<TSource, TResult> selector)
-        {
-            foreach (var item in source)
-            {
-                yield return selector(item);
+                MaxHeapify(arr, i, n);
             }
         }
+
+        private void MaxHeapify(List<(string Line, decimal Value)> arr, int i, int n)
+        {
+            int largest = i;
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+
+            if (left < n && arr[left].Value > arr[largest].Value)
+            {
+                largest = left;
+            }
+
+            if (right < n && arr[right].Value > arr[largest].Value)
+            {
+                largest = right;
+            }
+
+            if (largest != i)
+            {
+                Swap(arr, i, largest);
+
+                // Recursively heapify the affected sub-tree
+                MaxHeapify(arr, largest, n);
+            }
+        }
+        private void Swap(List<(string Line, decimal Value)> arr, int i, int j)
+        {
+            var temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+
+        // Implementing Selection sort
+        //private List<string> OrderByAndSelectLines(List<string> lines)
+        //{
+        //    var lineData = new List<(string Line, decimal Value)>();
+
+        //    foreach (var line in lines)
+        //    {
+        //        var parts = line.Split(',');
+
+        //        if (parts.Length == 4)
+        //        {
+        //            if (decimal.TryParse(parts[3], out decimal value))
+        //            {
+        //                lineData.Add((line, value));
+        //            }
+        //        }
+        //    }
+
+        //    // Custom OrderBy method
+        //    lineData = OrderBy(lineData, ld => ld.Value).ToList();
+        //    var orderedLines = Select(lineData, ld => ld.Line).ToList();
+
+        //    return orderedLines;
+        //}
+
+        //private IEnumerable<TSource> OrderBy<TSource, TKey>(
+        //IEnumerable<TSource> source,
+        //Func<TSource, TKey> keySelector)
+        //{
+        //    var list = source.ToList();
+        //    int n = list.Count;
+
+        //    for (int i = 0; i < n - 1; i++)
+        //    {
+        //        int minIndex = i;
+
+        //        for (int j = i + 1; j < n; j++)
+        //        {
+        //            if (Comparer<TKey>.Default.Compare(keySelector(list[j]), keySelector(list[minIndex])) < 0)
+        //            {
+        //                minIndex = j;
+        //            }
+        //        }
+
+        //        if (minIndex != i)
+        //        {
+        //            // Swap elements
+        //            TSource temp = list[i];
+        //            list[i] = list[minIndex];
+        //            list[minIndex] = temp;
+        //        }
+        //    }
+
+        //    return list;
+        //}
+
+        //private IEnumerable<TResult> Select<TSource, TResult>(
+        //    IEnumerable<TSource> source,
+        //    Func<TSource, TResult> selector)
+        //{
+        //    foreach (var item in source)
+        //    {
+        //        yield return selector(item);
+        //    }
+        //}
 
         // Clicks & window actions -----------------------------------------------------------------------------------------------------------------------------------------------------
+
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -426,13 +553,13 @@ namespace Prio.View
 
         private void btnComplete_Click(object sender, RoutedEventArgs e)
         {
-            DequeueComplete();
+            StackComplete();
             LoadDataFromFile(@"..\..\Files\IP.txt");
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            DequeueCancel();
+            StackCancel();
             LoadDataFromFile(@"..\..\Files\IP.txt");
         }
 
