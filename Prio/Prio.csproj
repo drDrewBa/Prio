@@ -94,7 +94,10 @@
     <Compile Include="Model\DataItem.cs" />
     <Compile Include="Model\EstimatedTime.cs" />
     <Compile Include="Model\MainModel.cs" />
+    <Compile Include="ViewModel\PrioCalculator.cs" />
+    <Compile Include="ViewModel\BinaryHeap.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\Stacks.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
